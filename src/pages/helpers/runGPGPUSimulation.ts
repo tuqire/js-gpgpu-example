@@ -3,10 +3,11 @@ import PhysicsRenderer from './PhysicsRenderer'
 import fragmentShader from './fragmentShader'
 
 
-const runGPGPUSimulation = (length: number) => {
+const runGPGPUSimulation = (numCalculations: number) => {
   // data array
-  const data = new Array(length).fill(0).map((_, i) => i)
-  
+  const data = new Array(1000000).fill(0).map((_, i) => i)
+  const numCalculationsPerItem = (numCalculations / 1000000)
+
   // define texture size
   const textureSize = Math.sqrt(data.length / 4)
   
@@ -39,6 +40,7 @@ const runGPGPUSimulation = (length: number) => {
   const physicsRenderer = new PhysicsRenderer(textureSize, fragmentShader, renderer);
   const texture = createTexture();
   physicsRenderer.reset(texture);
+  physicsRenderer.setUniform("numCalculationsPerItem", numCalculationsPerItem)
 
   physicsRenderer.update();
 
