@@ -6,7 +6,7 @@ const fragmentShader = `
 
 	void main() {
     vec2 uv = gl_FragCoord.xy / resolution;
-    vec4 color = texture2D(tex , uv).rgba;
+    vec4 color = texture2D(tex, uv).rgba;
 		gl_FragColor = color * 2.0;
 	}
 `
