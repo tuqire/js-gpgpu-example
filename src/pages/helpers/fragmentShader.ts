@@ -1,4 +1,10 @@
-export default `void main() {
-  vec4 data = vec4(1.0, 2.0, 3.0, 4.0);
-  gl_FragColor = data * 2.0;
-}`
+const fragmentShader = `
+	void main() {
+		vec2 uv = gl_FragCoord.xy / resolution.xy;
+		vec4 colors = texture2D(inputTexture, uv).rgba;
+
+		gl_FragColor = vec4(1.0, 1.0, 1.0, 0.5);
+	}
+`
+
+export default fragmentShader

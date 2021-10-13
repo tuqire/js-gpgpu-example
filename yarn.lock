@@ -2863,6 +2863,11 @@ text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
+three.js-fbo@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/three.js-fbo/-/three.js-fbo-1.6.0.tgz#5e8a057116d9a3894069f682ec169e9184910169"
+  integrity sha512-4xMNl1ZS8/245WMm/6CnzSsAWgvdvp9+XxgdggHtX6EjBcYmgNKyQpC7pvVFoDcyk+ZJ2BOclTmwm4lMs1WRaQ==
+
 three@^0.133.1:
   version "0.133.1"
   resolved "https://registry.yarnpkg.com/three/-/three-0.133.1.tgz#5606f4817d67a09d9212d4ccbd6826564774f8f4"
