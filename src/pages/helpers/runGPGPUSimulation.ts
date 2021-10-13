@@ -1,46 +1,67 @@
 import * as THREE from 'three'
-import { GPUComputationRenderer } from './GPUComputationRenderer'
+import PhysicsRenderer from './PhysicsRenderer'
 import fragmentShader from './fragmentShader'
 
 // data array
-const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+const data = new Array(10000).fill(0).map((_, i) => i)
 
 // define texture size
-const textureWidth = Math.sqrt(data.length / 4)
-const textureHeight = textureWidth
+const textureSize = Math.sqrt(data.length / 4)
+
+function createPositionTexture(){
+  var data = new Float32Array( textureSize * textureSize * 4 );
+
+  for(let i =0; i < data.length; i++ ){
+
+    //makes some weird sin based positions
+    data[ i ] = Math.sin( i*.1 ) * 30;
+    
+  }
+
+  const texture = new THREE.DataTexture( 
+    data,
+    textureSize,
+    textureSize,
+    THREE.RGBAFormat,
+    THREE.FloatType
+  );
+
+  texture.minFilter =  THREE.NearestFilter,
+  texture.magFilter = THREE.NearestFilter,
+
+  texture.needsUpdate = true;
+
+  return texture;
+}
 
 const runGPGPUSimulation = () => {
   // init THREE
   const renderer = new THREE.WebGLRenderer()
-  renderer.setSize(10, 10) // use texture width and height
+  document.body.querySelector("#__next")?.appendChild(renderer.domElement)
 
-  const gpuCompute = new GPUComputationRenderer(textureWidth, textureHeight, renderer)
+  const physicsRenderer = new PhysicsRenderer(textureSize, fragmentShader, renderer);
+  var texture = createPositionTexture();
+  physicsRenderer.reset(texture);
 
   // create input texture
-  const inputTexture = gpuCompute.createTexture()
-  for (let i = 0; i < data.length; i++) {
-    inputTexture.image.data[i] = data[i];
-  }
-  
-  // configure shader to run
-  const simulation = gpuCompute.addVariable("inputTexture", fragmentShader, inputTexture)
-  gpuCompute.setVariableDependencies(simulation, [simulation])
+  // const inputTexture = gpuCompute.createTexture()
+  // for (let i = 0; i < data.length; i++) {
+  //   inputTexture.image.data[i] = data[i];
+  // }
 
-  const error = gpuCompute.init();
-  
-  if (error !== null) {
-    console.error({ error });
-  }
-  
-  // run shader
-  gpuCompute.compute()
+  physicsRenderer.update();
 
-  // get data from output texture, values will be [2, 4, 6, 8, .., 32]
-  const gl = renderer.getContext();
-  let pixels = new Uint8Array(textureWidth * textureHeight * 4);
-  gl.readPixels(0, 0, textureWidth, textureHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-
+  const gl = renderer.getContext()
+  // gl.bindFramebuffer(gl.FRAMEBUFFER, _this.myFrameBufferObject);
+  const results = new Uint8ClampedArray(textureSize * textureSize * 4);
+  gl.readPixels(0, 0, textureSize, textureSize, gl.RGBA, gl.UNSIGNED_BYTE, results);
+  const pixels = new Float32Array(results)
+  console.table({ results })
   console.table({ pixels })
+  // // print the results
+  // for (let i = 0; i < textureWidth * textureHeight*4; ++i) {
+  //   console.log(results[i]);
+  // }
 }
 
 export default runGPGPUSimulation

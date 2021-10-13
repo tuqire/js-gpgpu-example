@@ -1,9 +1,13 @@
 const fragmentShader = `
-	void main() {
-		vec2 uv = gl_FragCoord.xy / resolution.xy;
-		vec4 colors = texture2D(inputTexture, uv).rgba;
+	uniform sampler2D tex;  // Current Position Texture
+	uniform sampler2D t_pos;  // Current Position Texture
+	uniform sampler2D t_oPos; // Old Position Texture
+	uniform vec2 resolution;  // Resolution of simulation
 
-		gl_FragColor = vec4(1.0, 1.0, 1.0, 0.5);
+	void main() {
+    vec2 uv = gl_FragCoord.xy / resolution;
+    vec4 color = texture2D(tex , uv).rgba;
+		gl_FragColor = color * 2.0;
 	}
 `
 
